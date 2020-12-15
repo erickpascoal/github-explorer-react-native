@@ -3,9 +3,8 @@ import { Text, Image } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-community/async-storage';
-
+import { useNavigation } from '@react-navigation/native';
 import api from '../../services/api';
-
 import { Container, Input, ButtonSearch, ButtonSearchText, Form, ContainerRepository, RepositoryTitle, RepositoryDescription, ContainerInfo } from './styles';
 
 interface SearchData {
@@ -23,8 +22,9 @@ interface Repository {
 
 const Dashboard: React.FC = () => {
   const [repositories, setRepositories] = useState<Repository[]>([]);
-
   const { control, handleSubmit, errors } = useForm();
+  const navigation = useNavigation();
+
 
   useEffect(() => {
     getRepositoriesFromStorage();
@@ -64,6 +64,12 @@ const Dashboard: React.FC = () => {
     }
   }, [repositories]);
 
+  const gotoRepository = useCallback((repositoryName: string) => {
+    console.log('repositoryName', repositoryName);
+
+    navigation.navigate('Repository', { repositoryName });
+  }, []);
+
   return (
     <Container>
       <Form>
@@ -91,7 +97,7 @@ const Dashboard: React.FC = () => {
       {errors.search && <Text>Esse campo é obrigatório.</Text>}
 
       {repositories.map((repository: Repository) => (
-        <ContainerRepository key={repository.full_name}>
+        <ContainerRepository key={repository.full_name} onPress={() => gotoRepository(repository.full_name)}>
           <Image style={{ width: 45, height: 45 }} source={{ uri: repository.owner.avatar_url }} />
 
           <ContainerInfo>

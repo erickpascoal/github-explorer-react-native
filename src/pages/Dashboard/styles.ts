@@ -30,7 +30,7 @@ export const ButtonSearchText = styled.Text`
   color: #ffffff;
 `;
 
-export const ContainerRepository = styled.View`
+export const ContainerRepository = styled.TouchableOpacity`
   background-color: #ffffff;
   flex-direction: row;
   align-items: center;
