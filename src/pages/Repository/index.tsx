@@ -1,12 +1,12 @@
-import { useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Text, View, SafeAreaView, ScrollView, Image } from 'react-native';
+import { SafeAreaView, ScrollView, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import api from '../../services/api';
 import {
   Container, ContainerInfo, ContainerRepositoryStatus, ContainerStatus,
   IssueDescription, IssueStyled, IssueTitle, RepositoryDescription, RepositoryInfo,
-  RepositoryName, ContainerRepositoryText, StatusName, StatusNumber, Header, BackText
+  RepositoryName, ContainerRepositoryText, StatusName, StatusNumber
 } from './styles';
 
 interface PropsParams {
@@ -36,11 +36,12 @@ interface Issue {
 
 const Repository: React.FC = () => {
 
+  const navigation = useNavigation();
   const route = useRoute();
   const params = route.params as PropsParams;
   const [repositoryName, setRepositoryName] = useState<string>(params.repositoryName);
   const [repository, setRepository] = useState<Repository | null>(null);
-  const [issues, setIssues] = useState<any[]>([]);
+  const [issues, setIssues] = useState<Issue[]>([]);
 
   useEffect(() => {
     init();
@@ -97,8 +98,8 @@ const Repository: React.FC = () => {
             </>
           )}
 
-          {issues && issues.map((issue: any) => (
-            <IssueStyled key={issue.id}>
+          {issues && issues.map((issue: Issue) => (
+            <IssueStyled key={issue.id} onPress={() => navigation.navigate('Issue', { issueUrl: issue.html_url })}>
               <ContainerInfo>
                 <IssueTitle>{issue.title}</IssueTitle>
                 <IssueDescription>{issue.user.login}</IssueDescription>
