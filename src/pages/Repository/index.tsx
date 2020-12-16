@@ -1,9 +1,13 @@
 import { useRoute } from '@react-navigation/native';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Text, View, SafeAreaView, ScrollView } from 'react-native';
+import { Text, View, SafeAreaView, ScrollView, Image } from 'react-native';
+import Icon from 'react-native-vector-icons/Feather';
 import api from '../../services/api';
-
-import { Container, IssueStyled } from './styles';
+import {
+  Container, ContainerInfo, ContainerRepositoryStatus, ContainerStatus,
+  IssueDescription, IssueStyled, IssueTitle, RepositoryDescription, RepositoryInfo,
+  RepositoryName, ContainerRepositoryText, StatusName, StatusNumber, Header, BackText
+} from './styles';
 
 interface PropsParams {
   repositoryName: string;
@@ -35,7 +39,7 @@ const Repository: React.FC = () => {
   const route = useRoute();
   const params = route.params as PropsParams;
   const [repositoryName, setRepositoryName] = useState<string>(params.repositoryName);
-  const [repository, setRepository] = useState<Repository>({} as Repository);
+  const [repository, setRepository] = useState<Repository | null>(null);
   const [issues, setIssues] = useState<any[]>([]);
 
   useEffect(() => {
@@ -58,17 +62,48 @@ const Repository: React.FC = () => {
     <SafeAreaView>
       <ScrollView>
         <Container>
+
+          {/* <Header>
+            <Icon color='#6C6C80' name="chevron-left" size={20} />
+            <BackText>Voltar </BackText>
+          </Header> */}
+
           {repository && (
-            <View key={repository.full_name}>
-              <Text>{repository.full_name}</Text>
-              <Text>{repository.description}</Text>
-            </View>
+            <>
+              <ContainerRepositoryText>
+                <Image style={{ width: 70, height: 70 }} source={{ uri: repository?.owner?.avatar_url }} />
+                <RepositoryInfo>
+                  <RepositoryName>{repository.full_name}</RepositoryName>
+                  <RepositoryDescription>{repository.description}</RepositoryDescription>
+                </RepositoryInfo>
+              </ContainerRepositoryText>
+
+              <ContainerRepositoryStatus>
+                <ContainerStatus>
+                  <StatusNumber>{repository.stargazers_count.toString()}</StatusNumber>
+                  <StatusName>Stars</StatusName>
+                </ContainerStatus>
+
+                <ContainerStatus>
+                  <StatusNumber>{repository.forks_count.toString()}</StatusNumber>
+                  <StatusName>Forks</StatusName>
+                </ContainerStatus>
+
+                <ContainerStatus>
+                  <StatusNumber>{repository.open_issues_count.toString()}</StatusNumber>
+                  <StatusName>Issues abertas</StatusName>
+                </ContainerStatus>
+              </ContainerRepositoryStatus>
+            </>
           )}
 
           {issues && issues.map((issue: any) => (
             <IssueStyled key={issue.id}>
-              <Text>{issue.title}</Text>
-              <Text>{issue.user.login}</Text>
+              <ContainerInfo>
+                <IssueTitle>{issue.title}</IssueTitle>
+                <IssueDescription>{issue.user.login}</IssueDescription>
+              </ContainerInfo>
+              <Icon color='#C9C9D4' name="chevron-right" size={20} />
             </IssueStyled>
           ))}
         </Container>

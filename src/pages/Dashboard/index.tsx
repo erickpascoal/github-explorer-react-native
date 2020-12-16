@@ -1,11 +1,11 @@
 import React, { useCallback, useState, useEffect } from 'react';
-import { Text, Image } from 'react-native';
+import { Text, Image, SafeAreaView, ScrollView } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-community/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import api from '../../services/api';
-import { Container, Input, ButtonSearch, ButtonSearchText, Form, ContainerRepository, RepositoryTitle, RepositoryDescription, ContainerInfo } from './styles';
+import { Container, Input, ButtonSearch, ButtonSearchText, Form, ContainerRepository, RepositoryTitle, RepositoryDescription, ContainerInfo, Header, Logo, BackText } from './styles';
 
 interface SearchData {
   repositoryName: string;
@@ -24,7 +24,6 @@ const Dashboard: React.FC = () => {
   const [repositories, setRepositories] = useState<Repository[]>([]);
   const { control, handleSubmit, errors } = useForm();
   const navigation = useNavigation();
-
 
   useEffect(() => {
     getRepositoriesFromStorage();
@@ -96,19 +95,23 @@ const Dashboard: React.FC = () => {
 
       {errors.search && <Text>Esse campo é obrigatório.</Text>}
 
-      {repositories.map((repository: Repository) => (
-        <ContainerRepository key={repository.full_name} onPress={() => gotoRepository(repository.full_name)}>
-          <Image style={{ width: 45, height: 45 }} source={{ uri: repository.owner.avatar_url }} />
+      <SafeAreaView>
+        <ScrollView>
+          {repositories.map((repository: Repository) => (
+            <ContainerRepository key={repository.full_name} onPress={() => gotoRepository(repository.full_name)}>
+              <Image style={{ width: 45, height: 45 }} source={{ uri: repository.owner.avatar_url }} />
 
-          <ContainerInfo>
-            <RepositoryTitle>{repository.full_name}</RepositoryTitle>
-            <RepositoryDescription>{repository.description}</RepositoryDescription>
-          </ContainerInfo>
+              <ContainerInfo>
+                <RepositoryTitle>{repository.full_name}</RepositoryTitle>
+                <RepositoryDescription>{repository.description}</RepositoryDescription>
+              </ContainerInfo>
 
-          <Icon color='#C9C9D4' name="chevron-right" size={20} />
+              <Icon color='#C9C9D4' name="chevron-right" size={20} />
 
-        </ContainerRepository>
-      ))}
+            </ContainerRepository>
+          ))}
+        </ScrollView>
+      </SafeAreaView>
 
     </Container>
   );
