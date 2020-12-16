@@ -34,9 +34,9 @@ const Dashboard: React.FC = () => {
     const repository = response.data;
     repositories.push(repository);
     setRepositories([...repositories]);
-    console.log('repositories13', repositories);
-
     storeRepositories();
+
+    control.setValue('repositoryName', '');
   }, [repositories]);
 
   const storeRepositories = useCallback(async () => {
@@ -64,8 +64,6 @@ const Dashboard: React.FC = () => {
   }, [repositories]);
 
   const gotoRepository = useCallback((repositoryName: string) => {
-    console.log('repositoryName', repositoryName);
-
     navigation.navigate('Repository', { repositoryName });
   }, []);
 
